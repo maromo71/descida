@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10a Descida da Ladeira</title>
+    <style>
+        /* Estilos CSS embutidos */
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif; /* Fonte mais moderna */
+            line-height: 1.6;
+            margin: 0;
+            padding: 15px; /* Reduzido para melhor visualização em telas menores */
+            background-color: #eef2f5; /* Fundo suave */
+            color: #333;
+            display: flex; /* Para centralizar o app */
+            justify-content: center; /* Para centralizar o app */
+        }
+
+        #app {
+            width: 100%; /* Ocupa a largura disponível */
+            max-width: 960px; /* Largura máxima */
+            margin: 20px auto; /* Margem automática para centralizar */
+            background: #ffffff; /* Fundo branco para o conteúdo */
+            padding: 25px; /* Espaçamento interno */
+            border-radius: 12px; /* Bordas mais arredondadas */
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1); /* Sombra mais pronunciada */
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #1a237e; /* Azul escuro para o título */
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.9em; /* Tamanho do título principal */
+            font-weight: 600;
+        }
+
+        section {
+            background-color: #f8f9fa; /* Fundo levemente cinza para seções */
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #dee2e6; /* Borda sutil */
+            border-radius: 8px; /* Bordas arredondadas para seções */
+        }
+
+        section h2 {
+            color: #0056b3; /* Azul para títulos de seção */
+            margin-top: 0;
+            border-bottom: 2px solid #007bff; /* Linha abaixo do título da seção */
+            padding-bottom: 8px;
+            font-size: 1.5em;
+        }
+
+        section h3 {
+            color: #343a40; /* Cinza escuro para subtítulos */
+            margin-top: 20px;
+            font-size: 1.3em;
+        }
+
+        .input-area {
+            margin-bottom: 20px;
+        }
+
+        .team-input-entry, .team-input-entry-final {
+            display: grid;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #e9ecef; /* Linha divisória mais suave */
+            border-radius: 4px; /* Pequeno arredondamento */
+            background-color: #fff; /* Fundo branco para cada entrada */
+        }
+        /* Adaptação para 2 colunas de input + label */
+        .team-input-entry {
+            grid-template-columns: minmax(200px, 1.5fr) 1fr 1fr;
+        }
+        /* Adaptação para 3 colunas de input + label */
+        .team-input-entry-final {
+            grid-template-columns: minmax(200px, 1.5fr) 1fr 1fr 1fr;
+        }
+
+
+        .team-input-entry label, .team-input-entry-final label {
+            font-weight: 600; /* Texto do label em negrito */
+            color: #495057; /* Cor do label */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .team-input-entry input[type="number"],
+        .team-input-entry-final input[type="number"] {
+            padding: 10px;
+            border: 1px solid #ced4da; /* Borda do input */
+            border-radius: 6px; /* Bordas arredondadas para inputs */
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 0.95em;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .team-input-entry input[type="number"]:focus,
+        .team-input-entry-final input[type="number"]:focus {
+            border-color: #007bff; /* Cor da borda ao focar */
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25); /* Sombra ao focar */
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px 18px;
+            background-color: #007bff; /* Azul primário para botões */
+            color: white;
+            border: none;
+            border-radius: 6px; /* Bordas arredondadas para botões */
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 500;
+            margin-top: 15px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Azul mais escuro no hover */
+            transform: translateY(-1px); /* Efeito sutil de elevação */
+        }
+        button:disabled {
+            background-color: #6c757d; /* Cinza para botões desabilitados */
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-area {
+            margin-top: 25px;
+        }
+
+        .results-area ol, .results-area ul {
+            padding-left: 25px; /* Maior indentação para listas */
+            list-style-type: decimal-leading-zero; /* Estilo de lista */
+        }
+        .results-area ul {
+            list-style-type: disc; /* Estilo para listas não ordenadas (qualificados) */
+        }
+
+        .results-area li {
+            padding: 8px 0;
+            border-bottom: 1px dotted #ced4da; /* Linha pontilhada mais sutil */
+            font-size: 0.95em;
+        }
+        .results-area li:last-child {
+            border-bottom: none;
+        }
+
+        .results-area li.champion {
+            font-weight: bold;
+            color: #28a745; /* Verde para campeão */
+            font-size: 1.1em;
+        }
+        .results-area li.vice-champion {
+            font-weight: bold;
+            color: #ffc107; /* Amarelo para vice */
+            font-size: 1.05em;
+        }
+        .results-area li.third-place {
+            font-weight: bold;
+            color: #fd7e14; /* Laranja para terceiro */
+            font-size: 1.0em;
+        }
+
+        hr {
+            margin-top: 35px;
+            margin-bottom: 35px;
+            border: 0;
+            border-top: 1px solid #ced4da; /* Linha divisória mais sutil */
+        }
+
+        /* Mensagem de alerta customizada */
+        .custom-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px 25px;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease, top 0.5s ease;
+            font-size: 1em;
+        }
+        .custom-alert.show {
+            opacity: 1;
+            top: 40px;
+        }
+
+
+        /* Ajustes Responsivos */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            #app { padding: 15px; margin: 10px auto; }
+            header h1 { font-size: 1.6em; }
+            section h2 { font-size: 1.3em; }
+            section h3 { font-size: 1.1em; }
+
+            .team-input-entry, .team-input-entry-final {
+                grid-template-columns: 1fr; /* Empilha os elementos */
+            }
+            .team-input-entry label, .team-input-entry-final label {
+                margin-bottom: 5px;
+                min-width: auto;
+                white-space: normal; /* Permite quebra de linha no label */
+            }
+            .team-input-entry input[type="number"],
+            .team-input-entry-final input[type="number"] {
+                margin-bottom: 8px; /* Espaço entre inputs empilhados */
+            }
+            button { font-size: 1em; padding: 10px 15px; }
+        }
+         @media (max-width: 480px) {
+            header h1 { font-size: 1.4em; }
+            section h2 { font-size: 1.2em; }
+            .team-input-entry input[type="number"],
+            .team-input-entry-final input[type="number"] {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>10a Descida da Ladeira - Prof. Fioravante Willi Nesto</h1>
+        </header>
+
+        <main>
+            <div id="customAlertBox" class="custom-alert" style="display:none;"></div>
+
+            <section id="round1-section">
+                <h2>🏁 Etapa 1: Tomada de Tempos (31 Equipes, 2 Descidas)</h2>
+                <p>Insira os tempos para as duas descidas de cada equipe. Use o formato segundos.milissegundos (ex: <code>45.123</code>). Deixe em branco ou 0 se uma descida não foi completada ou for inválida.</p>
+                <div id="round1-inputs" class="input-area">
+                    </div>
+                <button id="processRound1Btn">Processar Etapa 1 → Classificar 21 Melhores</button>
+                <div id="round1-results" class="results-area" style="display:none;">
+                    <h3>Resultados Etapa 1 (Melhor Tempo Individual)</h3>
+                    <ol id="round1-ranking"></ol>
+                    <h3>Classificados para Etapa 2 (21 Melhores)</h3>
+                    <ul id="round1-qualifiers"></ul>
+                </div>
+            </section>
+
+            <hr style="display:none;" id="hr-after-r1">
+
+            <section id="round2-section" style="display:none;">
+                <h2>🏁 Etapa 2: Descida Única (21 Equipes)</h2>
+                <p>Insira os tempos da descida única. Use o formato segundos.milissegundos (ex: <code>45.123</code>).</p>
+                <div id="round2-inputs" class="input-area"></div>
+                <button id="processRound2Btn">Processar Etapa 2 → Classificar 15 Melhores</button>
+                <div id="round2-results" class="results-area" style="display:none;">
+                    <h3>Resultados Etapa 2</h3>
+                    <ol id="round2-ranking"></ol>
+                    <h3>Classificados para Etapa 3 (15 Melhores)</h3>
+                    <ul id="round2-qualifiers"></ul>
+                </div>
+            </section>
+
+            <hr style="display:none;" id="hr-after-r2">
+
+            <section id="round3-section" style="display:none;">
+                <h2>🏁 Etapa 3: Descida Única (15 Equipes)</h2>
+                <p>Insira os tempos da descida única. Use o formato segundos.milissegundos (ex: <code>45.123</code>).</p>
+                <div id="round3-inputs" class="input-area"></div>
+                <button id="processRound3Btn">Processar Etapa 3 → Classificar 9 Melhores</button>
+                <div id="round3-results" class="results-area" style="display:none;">
+                    <h3>Resultados Etapa 3</h3>
+                    <ol id="round3-ranking"></ol>
+                    <h3>Classificados para Etapa 4 (9 Melhores)</h3>
+                    <ul id="round3-qualifiers"></ul>
+                </div>
+            </section>
+
+            <hr style="display:none;" id="hr-after-r3">
+
+            <section id="round4-section" style="display:none;">
+                <h2>🏁 Etapa 4: Descida Única (9 Equipes)</h2>
+                <p>Insira os tempos da descida única. Use o formato segundos.milissegundos (ex: <code>45.123</code>).</p>
+                <div id="round4-inputs" class="input-area"></div>
+                <button id="processRound4Btn">Processar Etapa 4 → Classificar 3 Finalistas</button>
+                <div id="round4-results" class="results-area" style="display:none;">
+                    <h3>Resultados Etapa 4</h3>
+                    <ol id="round4-ranking"></ol>
+                    <h3>Classificados para a Final (3 Melhores)</h3>
+                    <ul id="round4-qualifiers"></ul>
+                </div>
+            </section>
+
+            <hr style="display:none;" id="hr-after-r4">
+
+            <section id="final-section" style="display:none;">
+                <h2>🏆 Final: 3 Descidas (3 Equipes)</h2>
+                <p>Insira os tempos das três descidas para cada finalista. Use o formato segundos.milissegundos (ex: <code>45.123</code>).</p>
+                <div id="final-inputs" class="input-area"></div>
+                <button id="processFinalBtn">Processar Final → Declarar Campeões</button>
+                <div id="final-results" class="results-area" style="display:none;">
+                    <h3>Resultados Finais (Melhor Tempo Individual das 3 Descidas)</h3>
+                    <ol id="final-ranking"></ol>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // JavaScript embutido
+        document.addEventListener('DOMContentLoaded', () => {
+            // Definição inicial das equipes
+            const initialTeams = [
+                { id: 1, name: "MORANGUINHOS DO ASFALTO" }, { id: 12, name: "ATÉ O FIM - PART. 3" },
+                { id: 23, name: "OLD BOYS" }, { id: 2, name: "BEMOVIE" },
+                { id: 13, name: "DESTROYER" }, { id: 24, name: "ROLI WHEELS" },
+                { id: 3, name: "ÁGUIAS DO DECLIVE" }, { id: 14, name: "MILAN B" },
+                { id: 25, name: "RENANFELIX" }, { id: 4, name: "PCM 2.0" },
+                { id: 15, name: "LCR" }, { id: 26, name: "MÁFIA ITALIANA" },
+                { id: 5, name: "PM2" }, { id: 16, name: "MUTLEY" },
+                { id: 27, name: "RETURN 22" }, { id: 6, name: "LENTOS E CALMOS" },
+                { id: 17, name: "OS CAPOTA MAS NÃO BRECA" }, { id: 28, name: "PACATOS" },
+                { id: 7, name: "ROLIMÃ RACING" }, { id: 18, name: "DESCARRILADOS" },
+                { id: 29, name: "NÓIS CAPOTA MAS NÃO BRECA" }, { id: 8, name: "REDBULLACHAS" },
+                { id: 19, name: "XLR8" }, { id: 30, name: "VELOZES & ROLADO" },
+                { id: 9, name: "PÉ DE VENTO" }, { id: 20, name: "THUNDER ON WHEELS" }, // Corrigido de TA CABANO para PÉ DE VENTO (ID 9)
+                { id: 31, name: "TÁ CABANO" }, // Corrigido de THUNDER ON WHEELS para TÁ CABANO (ID 31)
+                { id: 10, name: "ROLLERCOASTER" }, { id: 21, name: "SEM FREIO" },
+                { id: 22, name: "AMIGOS DO CABELO" }, { id: 11, name: "TWO SPIRIT 3.0" } // Corrigido de TWO SPIRIT 3.0 para AMIGOS DO CABELO (ID 22) e vice-versa (ID 11)
+            ].map(team => ({ // Mapeia para a estrutura de dados interna
+                ...team,
+                times: { r1d1: null, r1d2: null, r2d1: null, r3d1: null, r4d1: null, final1: null, final2: null, final3: null },
+                bestTimes: { r1: Infinity, r2: Infinity, r3: Infinity, r4: Infinity, final: Infinity },
+                status: 'active' // Status inicial
+            }));
+            // Ordena as equipes pelo ID para exibição inicial consistente
+            initialTeams.sort((a,b) => a.id - b.id);
+
+
+            let appState = {
+                teams: JSON.parse(JSON.stringify(initialTeams)), // Cópia profunda das equipes
+                qualifiers: [] // Array para armazenar os classificados de cada etapa
+            };
+
+            // --- Funções Auxiliares ---
+
+            // Função para exibir alertas customizados
+            function showAlert(message, duration = 3000) {
+                const alertBox = document.getElementById('customAlertBox');
+                alertBox.textContent = message;
+                alertBox.style.display = 'block';
+                alertBox.classList.add('show');
+                setTimeout(() => {
+                    alertBox.classList.remove('show');
+                    // Espera a transição de opacidade antes de esconder
+                     setTimeout(() => { alertBox.style.display = 'none'; }, 500);
+                }, duration);
+            }
+
+            // Converte o valor do input para número, tratando como Infinity se inválido ou não positivo
+            function parseTime(value) {
+                const strValue = String(value).replace(',', '.'); // Aceita vírgula como separador decimal
+                const num = parseFloat(strValue);
+                return isNaN(num) || num <= 0 ? Infinity : num;
+            }
+
+            // Formata o tempo para exibição (ex: 45,123 ou N/A)
+            function formatTime(time) {
+                return time === Infinity ? "N/A" : time.toFixed(3).replace('.', ',');
+            }
+
+            // Renderiza os campos de input de tempo para as equipes
+            function renderTimeInputs(containerId, teamsToRender, numRuns, inputPrefix) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = ''; // Limpa inputs anteriores
+                teamsToRender.forEach(team => {
+                    const entryDiv = document.createElement('div');
+                    // Adiciona classe CSS específica dependendo do número de descidas (para layout)
+                    entryDiv.classList.add(numRuns === 3 ? 'team-input-entry-final' : 'team-input-entry');
+                    
+                    let inputsHTML = '';
+                    for (let i = 1; i <= numRuns; i++) {
+                        // Cria os inputs com IDs únicos para cada equipe e descida
+                        inputsHTML += `<input type="number" step="0.001" min="0" id="team-${team.id}-${inputPrefix}-d${i}" placeholder="Descida ${i} (ex: 39.123)">`;
+                    }
+                    // Monta o HTML da linha de input para a equipe
+                    entryDiv.innerHTML = `<label for="team-${team.id}-${inputPrefix}-d1">${team.id}. ${team.name}:</label>${inputsHTML}`;
+                    container.appendChild(entryDiv);
+                });
+            }
+
+            // Exibe os resultados (ranking e classificados) na tela
+            function displayResults(rankingListId, qualifiersListId, rankedTeams, qualifiers, bestTimeKey) {
+                const rankingList = document.getElementById(rankingListId);
+                rankingList.innerHTML = ''; // Limpa ranking anterior
+                rankedTeams.forEach((team, index) => {
+                    const li = document.createElement('li');
+                    li.textContent = `${index + 1}º: ${team.name} (Nº ${team.id}) - Melhor Tempo: ${formatTime(team.bestTimes[bestTimeKey])}`;
+                    // Adiciona classes CSS para destacar os 3 primeiros na final
+                    if (qualifiersListId === 'final-ranking' && index === 0) li.classList.add('champion');
+                    if (qualifiersListId === 'final-ranking' && index === 1) li.classList.add('vice-champion');
+                    if (qualifiersListId === 'final-ranking' && index === 2) li.classList.add('third-place');
+                    rankingList.appendChild(li);
+                });
+
+                // Se houver uma lista de classificados (não é a final)
+                if (qualifiersListId && qualifiersListId !== 'final-ranking') {
+                    const qualifiersList = document.getElementById(qualifiersListId);
+                    qualifiersList.innerHTML = ''; // Limpa classificados anteriores
+                    qualifiers.forEach(team => {
+                        const li = document.createElement('li');
+                        li.textContent = `${team.name} (Nº ${team.id}) - Melhor Tempo: ${formatTime(team.bestTimes[bestTimeKey])}`;
+                        qualifiersList.appendChild(li);
+                    });
+                }
+                // Torna a área de resultados visível
+                document.getElementById(rankingListId.replace('-ranking', '-results')).style.display = 'block';
+            }
+
+            // Ordena as equipes pelo melhor tempo (chave especificada)
+            function sortTeamsByBestTime(teamsToSort, bestTimeKey) {
+                return teamsToSort.sort((a, b) => {
+                    const timeA = a.bestTimes[bestTimeKey];
+                    const timeB = b.bestTimes[bestTimeKey];
+                    // Lógica de ordenação: N/A (Infinity) vai para o final
+                    if (timeA === Infinity && timeB === Infinity) return 0;
+                    if (timeA === Infinity) return 1;
+                    if (timeB === Infinity) return -1;
+                    return timeA - timeB; // Ordena do menor para o maior tempo
+                });
+            }
+
+            // --- Etapa 1 ---
+            function setupRound1() {
+                renderTimeInputs('round1-inputs', appState.teams, 2, 'r1');
+            }
+
+            document.getElementById('processRound1Btn').addEventListener('click', () => {
+                // Coleta os tempos da Etapa 1
+                appState.teams.forEach(team => {
+                    const time1Input = document.getElementById(`team-${team.id}-r1-d1`);
+                    const time2Input = document.getElementById(`team-${team.id}-r1-d2`);
+                    const time1 = parseTime(time1Input ? time1Input.value : null);
+                    const time2 = parseTime(time2Input ? time2Input.value : null);
+                    team.times.r1d1 = time1;
+                    team.times.r1d2 = time2;
+                    team.bestTimes.r1 = Math.min(time1, time2); // Calcula o melhor tempo das duas descidas
+                });
+
+                // Ordena todas as equipes da Etapa 1 e seleciona os classificados
+                const rankedR1 = sortTeamsByBestTime([...appState.teams], 'r1');
+                appState.qualifiers = rankedR1.slice(0, 21).filter(team => team.bestTimes.r1 !== Infinity); // Pega os 21 melhores com tempos válidos
+                
+                displayResults('round1-ranking', 'round1-qualifiers', rankedR1, appState.qualifiers, 'r1');
+                
+                if (appState.qualifiers.length > 0) {
+                    document.getElementById('round2-section').style.display = 'block';
+                    document.getElementById('hr-after-r1').style.display = 'block';
+                    renderTimeInputs('round2-inputs', appState.qualifiers, 1, 'r2'); // Prepara inputs para Etapa 2
+                    document.getElementById('processRound1Btn').disabled = true; // Desabilita botão da Etapa 1
+                } else {
+                    showAlert("Nenhuma equipe se classificou com tempos válidos para a Etapa 2.");
+                }
+            });
+
+            // --- Etapa 2 ---
+            document.getElementById('processRound2Btn').addEventListener('click', () => {
+                // Coleta os tempos da Etapa 2 para os classificados
+                appState.qualifiers.forEach(team => {
+                    const timeInput = document.getElementById(`team-${team.id}-r2-d1`);
+                    const time = parseTime(timeInput ? timeInput.value : null);
+                    team.times.r2d1 = time;
+                    team.bestTimes.r2 = time; // Melhor tempo é o único tempo da descida
+
+                    // Atualiza o objeto da equipe no array principal 'appState.teams'
+                    const masterTeam = appState.teams.find(mt => mt.id === team.id);
+                    if (masterTeam) {
+                        masterTeam.times.r2d1 = team.times.r2d1;
+                        masterTeam.bestTimes.r2 = team.bestTimes.r2;
+                    }
+                });
+                 // Marca equipes que não se classificaram para esta rodada como tendo tempo Infinito
+                appState.teams.forEach(masterTeam => {
+                    if (!appState.qualifiers.find(q => q.id === masterTeam.id) && masterTeam.bestTimes.r1 !== Infinity) {
+                         masterTeam.bestTimes.r2 = Infinity;
+                    }
+                });
+
+
+                const rankedR2 = sortTeamsByBestTime([...appState.qualifiers], 'r2');
+                appState.qualifiers = rankedR2.slice(0, 15).filter(team => team.bestTimes.r2 !== Infinity); // Pega os 15 melhores
+
+                displayResults('round2-ranking', 'round2-qualifiers', rankedR2, appState.qualifiers, 'r2');
+
+                if (appState.qualifiers.length > 0) {
+                    document.getElementById('round3-section').style.display = 'block';
+                    document.getElementById('hr-after-r2').style.display = 'block';
+                    renderTimeInputs('round3-inputs', appState.qualifiers, 1, 'r3');
+                    document.getElementById('processRound2Btn').disabled = true;
+                } else {
+                    showAlert("Nenhuma equipe se classificou com tempos válidos para a Etapa 3.");
+                }
+            });
+
+            // --- Etapa 3 ---
+            document.getElementById('processRound3Btn').addEventListener('click', () => {
+                appState.qualifiers.forEach(team => {
+                    const timeInput = document.getElementById(`team-${team.id}-r3-d1`);
+                    const time = parseTime(timeInput ? timeInput.value : null);
+                    team.times.r3d1 = time;
+                    team.bestTimes.r3 = time;
+
+                    const masterTeam = appState.teams.find(mt => mt.id === team.id);
+                    if (masterTeam) {
+                        masterTeam.times.r3d1 = team.times.r3d1;
+                        masterTeam.bestTimes.r3 = team.bestTimes.r3;
+                    }
+                });
+                appState.teams.forEach(masterTeam => {
+                    if (!appState.qualifiers.find(q => q.id === masterTeam.id) && masterTeam.bestTimes.r2 !== Infinity) {
+                         masterTeam.bestTimes.r3 = Infinity;
+                    }
+                });
+
+                const rankedR3 = sortTeamsByBestTime([...appState.qualifiers], 'r3');
+                appState.qualifiers = rankedR3.slice(0, 9).filter(team => team.bestTimes.r3 !== Infinity); // Pega os 9 melhores
+
+                displayResults('round3-ranking', 'round3-qualifiers', rankedR3, appState.qualifiers, 'r3');
+
+                if (appState.qualifiers.length > 0) {
+                    document.getElementById('round4-section').style.display = 'block';
+                    document.getElementById('hr-after-r3').style.display = 'block';
+                    renderTimeInputs('round4-inputs', appState.qualifiers, 1, 'r4');
+                    document.getElementById('processRound3Btn').disabled = true;
+                } else {
+                    showAlert("Nenhuma equipe se classificou com tempos válidos para a Etapa 4.");
+                }
+            });
+
+            // --- Etapa 4 ---
+            document.getElementById('processRound4Btn').addEventListener('click', () => {
+                appState.qualifiers.forEach(team => {
+                    const timeInput = document.getElementById(`team-${team.id}-r4-d1`);
+                    const time = parseTime(timeInput ? timeInput.value : null);
+                    team.times.r4d1 = time;
+                    team.bestTimes.r4 = time;
+
+                    const masterTeam = appState.teams.find(mt => mt.id === team.id);
+                    if (masterTeam) {
+                        masterTeam.times.r4d1 = team.times.r4d1;
+                        masterTeam.bestTimes.r4 = team.bestTimes.r4;
+                    }
+                });
+                 appState.teams.forEach(masterTeam => {
+                    if (!appState.qualifiers.find(q => q.id === masterTeam.id) && masterTeam.bestTimes.r3 !== Infinity) {
+                         masterTeam.bestTimes.r4 = Infinity;
+                    }
+                });
+
+                const rankedR4 = sortTeamsByBestTime([...appState.qualifiers], 'r4');
+                appState.qualifiers = rankedR4.slice(0, 3).filter(team => team.bestTimes.r4 !== Infinity); // Pega os 3 melhores (finalistas)
+
+                displayResults('round4-ranking', 'round4-qualifiers', rankedR4, appState.qualifiers, 'r4');
+
+                if (appState.qualifiers.length > 0) {
+                    document.getElementById('final-section').style.display = 'block';
+                    document.getElementById('hr-after-r4').style.display = 'block';
+                    renderTimeInputs('final-inputs', appState.qualifiers, 3, 'final'); // Prepara inputs para a Final (3 descidas)
+                    document.getElementById('processRound4Btn').disabled = true;
+                } else {
+                    showAlert("Nenhuma equipe se classificou com tempos válidos para a Final.");
+                }
+            });
+
+            // --- Etapa Final ---
+            document.getElementById('processFinalBtn').addEventListener('click', () => {
+                appState.qualifiers.forEach(team => {
+                    const time1Input = document.getElementById(`team-${team.id}-final-d1`);
+                    const time2Input = document.getElementById(`team-${team.id}-final-d2`);
+                    const time3Input = document.getElementById(`team-${team.id}-final-d3`);
+
+                    const time1 = parseTime(time1Input ? time1Input.value : null);
+                    const time2 = parseTime(time2Input ? time2Input.value : null);
+                    const time3 = parseTime(time3Input ? time3Input.value : null);
+
+                    team.times.final1 = time1;
+                    team.times.final2 = time2;
+                    team.times.final3 = time3;
+                    team.bestTimes.final = Math.min(time1, time2, time3); // Melhor tempo das três descidas da final
+
+                    const masterTeam = appState.teams.find(mt => mt.id === team.id);
+                    if (masterTeam) {
+                        masterTeam.times.final1 = team.times.final1;
+                        masterTeam.times.final2 = team.times.final2;
+                        masterTeam.times.final3 = team.times.final3;
+                        masterTeam.bestTimes.final = team.bestTimes.final;
+                    }
+                });
+                appState.teams.forEach(masterTeam => {
+                    if (!appState.qualifiers.find(q => q.id === masterTeam.id) && masterTeam.bestTimes.r4 !== Infinity) {
+                         masterTeam.bestTimes.final = Infinity;
+                    }
+                });
+
+                const finalRanked = sortTeamsByBestTime([...appState.qualifiers], 'final')
+                                        .filter(team => team.bestTimes.final !== Infinity); // Ranking final apenas com tempos válidos
+                
+                // Exibe o ranking final (sem lista de classificados separada para a final)
+                displayResults('final-ranking', 'final-ranking', finalRanked, [], 'final');
+                document.getElementById('processFinalBtn').disabled = true;
+
+                if (finalRanked.length === 0) {
+                     showAlert("Nenhuma equipe completou a final com tempos válidos.");
+                } else {
+                    showAlert(`Campeão: ${finalRanked[0].name}!`, 5000);
+                }
+            });
+
+            // --- Configuração Inicial ---
+            setupRound1(); // Inicia a configuração da Etapa 1 ao carregar a página
+        });
+    </script>
+</body>
+</html>
